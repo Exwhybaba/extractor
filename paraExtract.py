@@ -1,0 +1,78 @@
+import pandas as pd
+import streamlit as st
+import spacy
+from pdfReader import extract  # Assuming this is where your extract function resides
+
+# Function to extract entities and save as CSV
+def entity(text):
+    current_question = 1
+    question = []
+    alpha = ['A.', 'B.', 'C.', 'D.', 'E.', 'F.', 'G.', 'H.', 'I.', 'J.', 'K.', 
+             'L.', 'M.', 'N.', 'O.', 'P.', 'Q.', 'R.', 'S.', 'T.', 'U.', 'V.', 'W.', 'X.', 'Y.', 'Z.',
+            'a.', 'b.', 'c.', 'd.', 'e.', 'f.', 'g.', 'h.', 'i.', 'j.', 'k.', 'l.', 'm.', 'n.', 'o.', 
+             'p.', 'q.', 'r.', 's.', 't.', 'u.', 'v.', 'w.', 'x.', 'y.', 'z.']
+    for line in text:
+        line = line.strip()  # Remove leading and trailing whitespaces
+        if line.startswith(str(current_question) + '.'):
+            # Extract the question and add it to the parameters dictionary
+            question.append(f'Q{current_question}')
+        elif line.strip().startswith(tuple(alpha)):
+            question.append(f'Q{current_question}{line[0]}')
+        elif line.startswith(str(current_question + 1) + '.'):
+            current_question += 1
+            question.append(f'Q{current_question}')
+
+    nlp = spacy.load("en_core_web_sm")
+    text_combined = '\n'.join(text)
+    doc = nlp(text_combined)
+    named_entities = ["STUDY", "FORM", "CENTER", "PATIENT", "NAMECODE", "FORMCODE", "DATECOMP", "WEEK"] 
+    # Initialize a dictionary to store extracted entities
+    extracted_entities = {entity: [] for entity in named_entities}
+
+    # Extract named entities from the text
+    for ent in doc.ents:
+        if ent.text in named_entities:
+            extracted_entities[ent.text].append(ent.label_)
+
+    # Create a list of strings representing extracted entities without the colon
+    entity_list = [entity for entity in extracted_entities.keys()]
+    
+    # Extend entity_list with questions
+    entity_list.extend(question)
+    
+    # Create a DataFrame with columns as entity_list
+    df = pd.DataFrame(columns=entity_list)
+    
+    # Add data to the DataFrame (here, all cells are filled with 'NA')
+    df.loc[0] = ['NA'] * len(entity_list)
+    
+    # Save DataFrame to CSV
+    df.to_csv('extracted_data.csv', index=False)
+
+# Function to create a visually appealing user interface
+def main():
+    st.set_page_config(page_title="PDF Text Extractor", layout="wide")
+    st.title("PDF Text Extractor")
+
+    # Allow user to upload a PDF file
+    uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"], help="Please upload a PDF file.")
+
+    if uploaded_file is not None:
+        # Process the uploaded file and extract text
+        text = extract(uploaded_file)
+
+        # Display the extracted text
+        st.header("Extracted Text:")
+        for line in text:
+            st.write(line)
+
+        # Add a download button for the extracted data
+        if st.button("Download Extracted Data", help="Click here to download the extracted data as a CSV file."):
+            # Extract and save the data
+            entity(text)
+            # Provide download link
+            with open('extracted_data.csv', 'rb') as f:
+                st.download_button(label='Download CSV', data=f, file_name='extracted_data.csv', mime='text/csv')
+
+if __name__ == "__main__":
+    main()
