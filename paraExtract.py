@@ -4,6 +4,7 @@ import spacy
 from pdfReader import extract
 
 
+model_directory = os.path.join('abdenv', 'Lib', 'site-packages', 'en_core_web_sm', 'en_core_web_sm-3.7.1')
 
 
 # Function to extract entities and save as CSV
@@ -25,7 +26,10 @@ def entity(text, filename):
             current_question += 1
             question.append(f'Q{current_question}')
 
-    nlp = spacy.load("en_core_web_sm")
+    #nlp = spacy.load("en_core_web_sm")
+    
+    # Load the model from the specified directory
+    nlp = spacy.load(model_directory)
     text_combined = '\n'.join(text)
     doc = nlp(text_combined)
     named_entities = ["STUDY", "FORM", "CENTER", "PATIENT", "NAMECODE", "FORMCODE", "DATECOMP", "WEEK"] 
