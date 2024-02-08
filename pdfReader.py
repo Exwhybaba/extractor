@@ -1,6 +1,4 @@
 import pandas as pd
-#from tabula import read_pdf
-import tabula
 import glob
 import os
 import PyPDF2 as pf
