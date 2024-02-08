@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import spacy
 from pdfReader import extract
+import os
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "en_core_web_sm-3.7.1")
 
