@@ -4,7 +4,7 @@ import spacy
 from pdfReader import extract  # Assuming this is where your extract function resides
 
 # Function to extract entities and save as CSV
-def entity(text):
+def entity(text, filename):
     current_question = 1
     question = []
     alpha = ['A.', 'B.', 'C.', 'D.', 'E.', 'F.', 'G.', 'H.', 'I.', 'J.', 'K.', 
@@ -46,8 +46,8 @@ def entity(text):
     # Add data to the DataFrame (here, all cells are filled with 'NA')
     df.loc[0] = ['NA'] * len(entity_list)
     
-    # Save DataFrame to CSV
-    df.to_csv('extracted_data.csv', index=False)
+    # Save DataFrame to CSV with filename based on the uploaded file name
+    df.to_csv(f'extract_{filename}.csv', index=False)
 
 # Function to create a visually appealing user interface
 def main():
@@ -60,7 +60,10 @@ def main():
     if uploaded_file is not None:
         # Process the uploaded file and extract text
         text = extract(uploaded_file)
-
+        
+        # Extract filename
+        filename = uploaded_file.name.split('.')[0]  # Extract filename without extension
+        
         # Display the extracted text
         st.header("Extracted Text:")
         for line in text:
@@ -69,10 +72,10 @@ def main():
         # Add a download button for the extracted data
         if st.button("Download Extracted Data", help="Click here to download the extracted data as a CSV file."):
             # Extract and save the data
-            entity(text)
+            entity(text, filename)
             # Provide download link
-            with open('extracted_data.csv', 'rb') as f:
-                st.download_button(label='Download CSV', data=f, file_name='extracted_data.csv', mime='text/csv')
+            with open(f'extract_{filename}.csv', 'rb') as f:
+                st.download_button(label=f'Download {filename}.csv', data=f, file_name=f'extract_{filename}.csv', mime='text/csv')
 
 if __name__ == "__main__":
     main()
