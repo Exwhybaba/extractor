@@ -2,9 +2,9 @@ import pandas as pd
 import streamlit as st
 import spacy
 from pdfReader import extract
-import os
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "en_core_web_sm-3.7.1")
+
+
 
 # Function to extract entities and save as CSV
 def entity(text, filename):
@@ -25,7 +25,7 @@ def entity(text, filename):
             current_question += 1
             question.append(f'Q{current_question}')
 
-    nlp = spacy.load(MODEL_PATH)
+    nlp = spacy.load("en_core_web_sm")
     text_combined = '\n'.join(text)
     doc = nlp(text_combined)
     named_entities = ["STUDY", "FORM", "CENTER", "PATIENT", "NAMECODE", "FORMCODE", "DATECOMP", "WEEK"] 
