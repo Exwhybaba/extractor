@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import spacy
 from pdfReader import extract
+import os
 
 
 model_directory = os.path.join('abdenv', 'Lib', 'site-packages', 'en_core_web_sm', 'en_core_web_sm-3.7.1')
