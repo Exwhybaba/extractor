@@ -1,12 +1,10 @@
 import pandas as pd
 import glob
 import os
-import PyPDF2 as pf
 import numpy as np
 import re
 from nltk import sent_tokenize
 import pdfplumber
-import ocrmypdf
 import nltk
 from nltk import pos_tag, word_tokenize
 from nltk.corpus import stopwords
