@@ -25,8 +25,7 @@ def entity(text, filename):
             current_question += 1
             question.append(f'Q{current_question}')
 
-    #nlp = spacy.load("en_core_web_sm")
-    nlp = spacy.load("https://github.com/Exwhybaba/extractor/raw/master/en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
     text_combined = '\n'.join(text)
     doc = nlp(text_combined)
     named_entities = ["STUDY", "FORM", "CENTER", "PATIENT", "NAMECODE", "FORMCODE", "DATECOMP", "WEEK"] 
