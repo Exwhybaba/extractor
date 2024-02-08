@@ -1,7 +1,13 @@
 import pandas as pd
 import streamlit as st
 import spacy
-from pdfReader import extract  # Assuming this is where your extract function resides
+from pdfReader import extract
+
+
+
+# Download the model
+spacy.cli.download("en_core_web_sm")
+
 
 # Function to extract entities and save as CSV
 def entity(text, filename):
