@@ -3,7 +3,7 @@ import streamlit as st
 import spacy
 from pdfReader import extract
 import os
-import en_core_web_sm
+
 
 
 
@@ -26,7 +26,7 @@ def entity(text, filename):
             current_question += 1
             question.append(f'Q{current_question}')
 
-    nlp = en_core_web_sm.load()
+    nlp = spacy.load("en_core_web_sm")
     text_combined = '\n'.join(text)
     doc = nlp(text_combined)
     named_entities = ["STUDY", "FORM", "CENTER", "PATIENT", "NAMECODE", "FORMCODE", "DATECOMP", "WEEK"] 
