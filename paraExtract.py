@@ -1,10 +1,13 @@
 import pandas as pd
 import streamlit as st
-import spacy
+import nltk
 from pdfReader import extract
 
-
-spacy.cli.download("en_core_web_sm")
+# Download NLTK resources
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
 
 # Function to extract entities and save as CSV
 def entity(text, filename):
@@ -25,30 +28,35 @@ def entity(text, filename):
             current_question += 1
             question.append(f'Q{current_question}')
 
-    nlp = spacy.load("en_core_web_sm")
-    text_combined = '\n'.join(text)
-    doc = nlp(text_combined)
-    named_entities = ["STUDY", "FORM", "CENTER", "PATIENT", "NAMECODE", "FORMCODE", "DATECOMP", "WEEK"] 
+    # Tokenize the text
+    tokens = nltk.word_tokenize(" ".join(text))
+    # Part-of-speech tagging
+    tagged = nltk.pos_tag(tokens)
+    # Named entity recognition
+    named_entities = nltk.ne_chunk(tagged)
+
     # Initialize a dictionary to store extracted entities
-    extracted_entities = {entity: [] for entity in named_entities}
+    extracted_entities = {"STUDY": [], "FORM": [], "CENTER": [], "PATIENT": [], 
+                          "NAMECODE": [], "FORMCODE": [], "DATECOMP": [], "WEEK": []}
 
     # Extract named entities from the text
-    for ent in doc.ents:
-        if ent.text in named_entities:
-            extracted_entities[ent.text].append(ent.label_)
+    for entity in named_entities:
+        if isinstance(entity, nltk.tree.Tree):
+            if entity.label() in extracted_entities:
+                extracted_entities[entity.label()].append(' '.join([word for word, _ in entity.leaves()]))
 
     # Create a list of strings representing extracted entities without the colon
-    entity_list = [entity for entity in extracted_entities.keys()]
-    
+    entity_list = list(extracted_entities.keys())
+
     # Extend entity_list with questions
     entity_list.extend(question)
-    
+
     # Create a DataFrame with columns as entity_list
     df = pd.DataFrame(columns=entity_list)
-    
+
     # Add data to the DataFrame (here, all cells are filled with 'NA')
     df.loc[0] = ['NA'] * len(entity_list)
-    
+
     # Save DataFrame to CSV with filename based on the uploaded file name
     df.to_csv(f'extract_{filename}.csv', index=False)
 
