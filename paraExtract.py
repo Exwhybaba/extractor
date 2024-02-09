@@ -5,7 +5,6 @@ from pdfReader import extract
 import os
 
 
-spacy.cli.download("en_core_web_sm")
 
 # Function to extract entities and save as CSV
 def entity(text, filename):
