@@ -3,10 +3,9 @@ import streamlit as st
 import spacy
 import os
 
-# Function to install SpaCy model if not already installed
 def install_spacy_model():
-    if "en_core_web_sm" not in spacy.util.get_installed_models():
-        os.system("python -m spacy download en_core_web_sm")
+    if not spacy.util.is_package("en_core_web_sm"):
+        os.system("python -m spacy download en_core_web_sm"
 
 # Function to extract entities and save as CSV
 def entity(text, filename):
