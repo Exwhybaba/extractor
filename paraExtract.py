@@ -1,7 +1,7 @@
-import pandas as pd
-import streamlit as st
-import nltk
-from pdfReader import extract
+#import pandas as pd
+#import streamlit as st
+#import nltk
+#from pdfReader import extract
 
 # Download NLTK resources
 nltk.download('punkt')
